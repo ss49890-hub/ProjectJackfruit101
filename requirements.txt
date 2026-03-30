@@ -1,5 +1,5 @@
 flask
 librosa
-tensorflow-cpu
+tensorflow==2.15.0
 numpy
 soundfile
