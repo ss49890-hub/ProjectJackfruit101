@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ตรวจสอบความสุกขนุน</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 500px;
+            margin: 50px auto;
+            text-align: center;
+            background: #f9f9f9;
+        }
+        h1 { color: #2e7d32; }
+        button {
+            padding: 15px 30px;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        #btnRecord  { background: #4CAF50; color: white; }
+        #btnStop    { background: #f44336; color: white; display: none; }
+        #result {
+            margin-top: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: none;
+        }
+        #className  { font-size: 28px; font-weight: bold; color: #2e7d32; }
+        #confidence { font-size: 18px; color: #666; }
+        #status     { color: #999; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <h1>🍈 ตรวจสอบความสุกขนุน</h1>
+    <p>กดปุ่มแล้วเคาะขนุน เพื่อตรวจสอบความสุก</p>
+
+    <button id="btnRecord">🎙️ เริ่มอัดเสียง</button>
+    <button id="btnStop">⏹️ หยุดและวิเคราะห์</button>
+
+    <p id="status"></p>
+
+    <div id="result">
+        <p>ผลการวิเคราะห์</p>
+        <div id="className"></div>
+        <div id="confidence"></div>
+    </div>
+
+    <script>
+        let mediaRecorder;
+        let audioChunks = [];
+
+        const btnRecord = document.getElementById("btnRecord");
+        const btnStop   = document.getElementById("btnStop");
+        const status    = document.getElementById("status");
+        const result    = document.getElementById("result");
+
+        btnRecord.addEventListener("click", async () => {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder = new MediaRecorder(stream);
+            audioChunks = [];
+
+            mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+            mediaRecorder.start();
+
+            btnRecord.style.display = "none";
+            btnStop.style.display   = "inline-block";
+            status.textContent = "🔴 กำลังอัดเสียง...";
+            result.style.display = "none";
+        });
+
+        btnStop.addEventListener("click", () => {
+            mediaRecorder.stop();
+            mediaRecorder.onstop = async () => {
+                status.textContent = "⏳ กำลังวิเคราะห์...";
+                btnStop.style.display   = "none";
+                btnRecord.style.display = "inline-block";
+
+                // ส่งไฟล์เสียงไปยัง Server
+                const blob = new Blob(audioChunks, { type: "audio/wav" });
+                const formData = new FormData();
+                formData.append("file", blob, "recording.wav");
+
+                const response = await fetch("/predict", {
+                    method: "POST",
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    status.textContent = "❌ เกิดข้อผิดพลาด: " + data.error;
+                } else {
+                    result.style.display = "block";
+                    document.getElementById("className").textContent = data.class;
+                    document.getElementById("confidence").textContent =
+                        `ความมั่นใจ: ${data.confidence.toFixed(1)}%`;
+                    status.textContent = "✅ วิเคราะห์เสร็จแล้ว";
+                }
+            };
+        });
+    </script>
+</body>
+</html>
