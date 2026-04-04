@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, render_template
 import librosa
 import numpy as np
-import tflite_runtime.interpreter as tflite
+import tensorflow as tf
 import tempfile
 import os
 import subprocess
@@ -9,7 +9,7 @@ import subprocess
 app = Flask(__name__)
 
 # โหลดโมเดล tflite
-interpreter = tflite.Interpreter(model_path="model_cnn4.tflite")
+interpreter = tf.lite.Interpreter(model_path="model_cnn4.tflite")
 interpreter.allocate_tensors()
 input_details  = interpreter.get_input_details()
 output_details = interpreter.get_output_details()
