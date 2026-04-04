@@ -1,5 +1,5 @@
 flask
 librosa
-tflite-runtime
 numpy
 soundfile
+tensorflow
