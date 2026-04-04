@@ -5,3 +5,4 @@ soundfile
 tensorflow-cpu==2.13.0
 gunicorn
 ffmpeg-python
+pydub
