@@ -298,7 +298,6 @@ async function startRecord() {
     document.getElementById('statusText').classList.add('active');
     document.getElementById('resultCard').classList.remove('show');
     document.getElementById('errorMsg').classList.remove('show');
-    setTimeout(() => { if (isRecording) stopRecord(); }, 3000);
   } catch(e) {
     showError('ไม่สามารถเข้าถึงไมค์ได้ กรุณาอนุญาตการใช้ไมค์');
   }
