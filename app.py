@@ -32,10 +32,26 @@ def extract_mfcc(audio_bytes):
     samples = samples / 32768.0
     
     target_len = int(16000 * 0.3)
+    
+    # หาจุดที่เสียงดังที่สุด แล้วตัด 0.3 วิรอบๆ จุดนั้น
+    if len(samples) > target_len:
+        energy = np.array([
+            np.sum(samples[i:i+160]**2)
+            for i in range(0, len(samples)-160, 160)
+        ])
+        peak_frame = np.argmax(energy)
+        peak_sample = peak_frame * 160
+        
+        start = max(0, peak_sample - target_len // 2)
+        end = start + target_len
+        if end > len(samples):
+            end = len(samples)
+            start = max(0, end - target_len)
+        
+        samples = samples[start:end]
+    
     if len(samples) < target_len:
         samples = np.pad(samples, (0, target_len - len(samples)), mode='constant')
-    else:
-        samples = samples[:target_len]
     
     mfcc = librosa.feature.mfcc(y=samples, sr=16000, n_mfcc=9, n_fft=320, hop_length=160)
     mfcc_norm = (mfcc - np.mean(mfcc)) / (np.std(mfcc) + 1e-9)
