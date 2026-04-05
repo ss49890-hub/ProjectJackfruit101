@@ -64,3 +64,306 @@
   .jackfruit-icon {
     font-size: 56px;
     display: block;
+    margin-bottom: 8px;
+    animation: float 3s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  .header h1 {
+    font-family: 'Kanit', sans-serif;
+    font-weight: 900;
+    font-size: 28px;
+    color: var(--yellow);
+    letter-spacing: 1px;
+    line-height: 1.2;
+  }
+  .header p {
+    color: rgba(255,255,255,0.75);
+    font-size: 14px;
+    margin-top: 6px;
+    font-weight: 300;
+  }
+  .main {
+    flex: 1;
+    padding: 24px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .record-card {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 20px;
+    padding: 28px 20px;
+    text-align: center;
+    backdrop-filter: blur(10px);
+  }
+  .record-hint {
+    color: rgba(255,255,255,0.6);
+    font-size: 13px;
+    margin-bottom: 20px;
+    line-height: 1.6;
+  }
+  .btn-record {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 18px 24px;
+    background: linear-gradient(135deg, #4caf50 0%, #2d7a2d 100%);
+    border: none;
+    border-radius: 50px;
+    color: white;
+    font-family: 'Kanit', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 24px rgba(76,175,80,0.4);
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-record:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 32px rgba(76,175,80,0.5);
+  }
+  .btn-record.recording {
+    background: linear-gradient(135deg, #e53935 0%, #b71c1c 100%);
+    box-shadow: 0 6px 24px rgba(229,57,53,0.4);
+    animation: pulse 1s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.03); }
+  }
+  .mic-icon { font-size: 22px; }
+  .status-text {
+    margin-top: 14px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+    min-height: 20px;
+    transition: all 0.3s;
+  }
+  .status-text.active { color: var(--yellow); }
+  .loading { display: none; text-align: center; padding: 24px; color: rgba(255,255,255,0.7); }
+  .loading.show { display: block; }
+  .spinner {
+    width: 40px; height: 40px;
+    border: 3px solid rgba(255,255,255,0.1);
+    border-top-color: var(--yellow);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 12px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .result-card {
+    display: none;
+    border-radius: 20px;
+    overflow: hidden;
+    animation: slideUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .result-card.show { display: block; }
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .result-header { padding: 24px 20px 20px; text-align: center; }
+  .result-emoji {
+    font-size: 64px; display: block; margin-bottom: 8px;
+    animation: bounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
+  }
+  @keyframes bounce {
+    from { transform: scale(0); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  .result-label { font-family: 'Kanit', sans-serif; font-size: 28px; font-weight: 700; color: white; display: block; }
+  .result-sublabel { font-size: 14px; color: rgba(255,255,255,0.8); margin-top: 4px; }
+  .confidence-bar-wrap { margin: 16px 20px 0; background: rgba(0,0,0,0.2); border-radius: 50px; height: 8px; overflow: hidden; }
+  .confidence-bar { height: 100%; border-radius: 50px; background: rgba(255,255,255,0.7); transition: width 1s cubic-bezier(0.34, 1.56, 0.64, 1); width: 0%; }
+  .confidence-text { text-align: center; font-size: 12px; color: rgba(255,255,255,0.6); margin: 6px 20px 0; }
+  .advice-section { background: var(--cream); padding: 20px; }
+  .advice-title { font-family: 'Kanit', sans-serif; font-weight: 700; font-size: 15px; color: var(--green-dark); margin-bottom: 14px; display: flex; align-items: center; gap: 6px; }
+  .advice-grid { display: grid; gap: 10px; }
+  .advice-item { background: white; border-radius: 14px; padding: 14px 16px; display: flex; align-items: flex-start; gap: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+  .advice-item-icon { font-size: 28px; flex-shrink: 0; line-height: 1; }
+  .advice-item-text { flex: 1; }
+  .advice-item-title { font-family: 'Kanit', sans-serif; font-weight: 600; font-size: 14px; color: var(--text-dark); margin-bottom: 3px; }
+  .advice-item-desc { font-size: 12px; color: #666; line-height: 1.5; }
+  .theme-raw .result-header { background: linear-gradient(135deg, #388e3c, #1b5e20); }
+  .theme-ripe .result-header { background: linear-gradient(135deg, #f9a825, #e65100); }
+  .theme-overripe .result-header { background: linear-gradient(135deg, #d84315, #b71c1c); }
+  .error-msg { display: none; background: rgba(229,57,53,0.15); border: 1px solid rgba(229,57,53,0.4); border-radius: 14px; padding: 14px 16px; color: #ff8a80; font-size: 13px; text-align: center; }
+  .error-msg.show { display: block; }
+  .footer { text-align: center; padding: 16px; color: rgba(255,255,255,0.25); font-size: 11px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <span class="jackfruit-icon">🍈</span>
+    <h1>ตรวจสอบความสุกขนุน</h1>
+    <p>เคาะขนุนแล้วฟังเสียง AI จะบอกความสุก</p>
+  </div>
+  <div class="main">
+    <div class="record-card">
+      <p class="record-hint">กดปุ่มด้านล่าง แล้วเคาะขนุนให้ดังชัดเจน<br>ระบบจะวิเคราะห์เสียงเพื่อบอกความสุก</p>
+      <button class="btn-record" id="btnRecord" onclick="toggleRecord()">
+        <span class="mic-icon">🎙️</span>
+        <span id="btnText">เริ่มอัดเสียง</span>
+      </button>
+      <div class="status-text" id="statusText">พร้อมใช้งาน</div>
+    </div>
+    <div class="loading" id="loading">
+      <div class="spinner"></div>
+      <div style="color:rgba(255,255,255,0.6); font-size:14px;">กำลังวิเคราะห์เสียง...</div>
+    </div>
+    <div class="error-msg" id="errorMsg"></div>
+    <div class="result-card" id="resultCard">
+      <div class="result-header">
+        <span class="result-emoji" id="resultEmoji">🍈</span>
+        <span class="result-label" id="resultLabel">-</span>
+        <div class="result-sublabel" id="resultSublabel">-</div>
+        <div class="confidence-bar-wrap">
+          <div class="confidence-bar" id="confidenceBar"></div>
+        </div>
+        <div class="confidence-text" id="confidenceText"></div>
+      </div>
+      <div class="advice-section">
+        <div class="advice-title" id="adviceTitle">📋 คำแนะนำ</div>
+        <div class="advice-grid" id="adviceGrid"></div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">Jackfruit Ripeness Checker • AI-powered</div>
+</div>
+<script>
+const ADVICE = {
+  'กล่อง': {
+    theme: 'theme-raw', emoji: '🟢', label: 'ยังดิบอยู่',
+    sublabel: 'ขนุนยังไม่สุก ควรเก็บไว้อีกสักระยะ',
+    adviceTitle: '⏰ ควรทำอะไรต่อ?',
+    items: [
+      { icon: '📅', title: 'เก็บไว้อีก 3–5 วัน', desc: 'วางในที่อุณหภูมิห้อง อย่าแช่ตู้เย็น จะสุกช้ากว่าปกติ' },
+      { icon: '🌡️', title: 'เร่งให้สุกเร็วขึ้น', desc: 'ห่อด้วยกระดาษหนังสือพิมพ์แล้วตั้งไว้ในที่อุ่น จะสุกเร็วขึ้น 1–2 วัน' },
+      { icon: '🍳', title: 'ทำเมนูขนุนดิบได้เลย', desc: 'แกงขนุน • ขนุนต้มกะทิ • ผัดขนุนดิบใส่หมู' },
+    ]
+  },
+  'ขวดน้ำ': {
+    theme: 'theme-ripe', emoji: '🟡', label: 'สุกพอดี',
+    sublabel: 'ขนุนสุกกำลังดี หวาน หอม น่ากิน!',
+    adviceTitle: '🍽️ เมนูแนะนำ',
+    items: [
+      { icon: '😋', title: 'กินสดได้เลย!', desc: 'ลอกเยื่อออกแล้วกินสดๆ หวานกรอบ อร่อยที่สุดตอนนี้เลย' },
+      { icon: '🧁', title: 'ทำของหวาน', desc: 'ข้าวเหนียวขนุน • ขนุนกวน • ไอศกรีมขนุน • ขนมปังขนุน' },
+      { icon: '🥤', title: 'ทำเครื่องดื่ม', desc: 'สมูทตี้ขนุน • น้ำขนุนปั่น • ชาขนุน' },
+      { icon: '❄️', title: 'เก็บในตู้เย็นได้', desc: 'ควรกินภายใน 2–3 วัน หรือแช่แข็งเก็บได้นานขึ้น' },
+    ]
+  },
+  'นิ้วชี้': {
+    theme: 'theme-overripe', emoji: '🔴', label: 'สุกมาก',
+    sublabel: 'ขนุนสุกมากแล้ว ควรรีบนำไปใช้',
+    adviceTitle: '👨‍🍳 รีบทำอาหารได้เลย',
+    items: [
+      { icon: '⚡', title: 'ใช้ทำอาหารด่วน!', desc: 'สุกมากแล้ว ควรนำไปใช้ภายในวันนี้ก่อนเสีย' },
+      { icon: '🍮', title: 'ทำขนมหวาน', desc: 'ขนุนกวน • วุ้นขนุน • พุดดิ้งขนุน • เค้กขนุน' },
+      { icon: '🥘', title: 'ทำกับข้าว', desc: 'แกงบวชขนุน • ขนุนผัดไข่ • ข้าวต้มขนุน' },
+      { icon: '🧊', title: 'แช่แข็งเก็บไว้', desc: 'แกะเนื้อออกแล้วแช่แข็ง เก็บได้นานถึง 3 เดือน' },
+    ]
+  }
+};
+
+let mediaRecorder = null;
+let audioChunks = [];
+let isRecording = false;
+
+async function toggleRecord() {
+  if (isRecording) { stopRecord(); } else { await startRecord(); }
+}
+
+async function startRecord() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    mediaRecorder = new MediaRecorder(stream);
+    audioChunks = [];
+    mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+    mediaRecorder.onstop = sendAudio;
+    mediaRecorder.start();
+    isRecording = true;
+    document.getElementById('btnRecord').classList.add('recording');
+    document.getElementById('btnText').textContent = 'หยุดอัดเสียง';
+    document.getElementById('statusText').textContent = '🔴 กำลังอัดเสียง... เคาะขนุนได้เลย';
+    document.getElementById('statusText').classList.add('active');
+    document.getElementById('resultCard').classList.remove('show');
+    document.getElementById('errorMsg').classList.remove('show');
+    setTimeout(() => { if (isRecording) stopRecord(); }, 3000);
+  } catch(e) {
+    showError('ไม่สามารถเข้าถึงไมค์ได้ กรุณาอนุญาตการใช้ไมค์');
+  }
+}
+
+function stopRecord() {
+  if (mediaRecorder && isRecording) {
+    mediaRecorder.stop();
+    mediaRecorder.stream.getTracks().forEach(t => t.stop());
+    isRecording = false;
+    document.getElementById('btnRecord').classList.remove('recording');
+    document.getElementById('btnText').textContent = 'เริ่มอัดเสียง';
+    document.getElementById('statusText').textContent = '⏳ กำลังส่งข้อมูล...';
+  }
+}
+
+async function sendAudio() {
+  const blob = new Blob(audioChunks, { type: 'audio/webm' });
+  const formData = new FormData();
+  formData.append('file', blob, 'audio.webm');
+  document.getElementById('loading').classList.add('show');
+  document.getElementById('statusText').textContent = '';
+  try {
+    const res = await fetch('/predict', { method: 'POST', body: formData });
+    const data = await res.json();
+    if (data.error) { showError('เกิดข้อผิดพลาด: ' + data.error); }
+    else { showResult(data); }
+  } catch(e) {
+    showError('เกิดข้อผิดพลาด: ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้');
+  } finally {
+    document.getElementById('loading').classList.remove('show');
+    document.getElementById('statusText').textContent = 'พร้อมใช้งาน';
+    document.getElementById('statusText').classList.remove('active');
+  }
+}
+
+function showResult(data) {
+  const cls = data.class;
+  const conf = data.confidence;
+  const info = ADVICE[cls] || ADVICE['ขวดน้ำ'];
+  const card = document.getElementById('resultCard');
+  card.className = 'result-card show ' + info.theme;
+  document.getElementById('resultEmoji').textContent = info.emoji;
+  document.getElementById('resultLabel').textContent = info.label;
+  document.getElementById('resultSublabel').textContent = info.sublabel;
+  document.getElementById('adviceTitle').textContent = info.adviceTitle;
+  document.getElementById('confidenceText').textContent = `ความมั่นใจ ${conf.toFixed(1)}%`;
+  setTimeout(() => { document.getElementById('confidenceBar').style.width = conf + '%'; }, 300);
+  const grid = document.getElementById('adviceGrid');
+  grid.innerHTML = info.items.map(item => `
+    <div class="advice-item">
+      <div class="advice-item-icon">${item.icon}</div>
+      <div class="advice-item-text">
+        <div class="advice-item-title">${item.title}</div>
+        <div class="advice-item-desc">${item.desc}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function showError(msg) {
+  const el = document.getElementById('errorMsg');
+  el.textContent = msg;
+  el.classList.add('show');
+}
+</script>
+</body>
+</html>
