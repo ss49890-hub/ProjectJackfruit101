@@ -7,10 +7,15 @@ import os
 import subprocess
 from pydub import AudioSegment
 import io
+from supabase import create_client
+import uuid
+
+SUPABASE_URL = os.environ.get("SUPABASE_URL")
+SUPABASE_KEY = os.environ.get("SUPABASE_KEY")
+supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 app = Flask(__name__)
 
-# โหลดโมเดล tflite
 interpreter = tf.lite.Interpreter(model_path="model_cnn4.tflite")
 interpreter.allocate_tensors()
 input_details  = interpreter.get_input_details()
@@ -22,15 +27,12 @@ DURATION    = 0.3
 N_MFCC      = 9
 N_FFT       = 320
 HOP_LENGTH  = 160
-FFMPEG_PATH = "ffmpeg"  # Render มี ffmpeg ในตัวเลย
 
 def extract_mfcc(audio_bytes):
     with tempfile.NamedTemporaryFile(suffix=".webm", delete=False) as tmp_in:
         tmp_in.write(audio_bytes)
         tmp_in_path = tmp_in.name
-
     tmp_out_path = tmp_in_path.replace(".webm", ".wav")
-
     subprocess.run([
         "ffmpeg", "-y",
         "-i", tmp_in_path,
@@ -38,20 +40,17 @@ def extract_mfcc(audio_bytes):
         "-ac", "1",
         tmp_out_path
     ], capture_output=True)
-
     y, sr = librosa.load(tmp_out_path, sr=SAMPLE_RATE, duration=DURATION)
     target_len = int(SAMPLE_RATE * DURATION)
     if len(y) < target_len:
         y = np.pad(y, (0, target_len - len(y)), mode='constant')
-
     mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=N_MFCC,
                                   n_fft=N_FFT, hop_length=HOP_LENGTH)
     mfcc_norm = (mfcc - np.mean(mfcc)) / (np.std(mfcc) + 1e-9)
-
     os.remove(tmp_in_path)
     os.remove(tmp_out_path)
-
     return mfcc_norm[np.newaxis, ..., np.newaxis].astype(np.float32)
+
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -73,6 +72,23 @@ def predict():
             "all"        : {CLASSES[i]: float(prediction[i] * 100) for i in range(len(CLASSES))}
         }
         return jsonify(result)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/save_feedback", methods=["POST"])
+def save_feedback():
+    if "file" not in request.files:
+        return jsonify({"error": "ไม่พบไฟล์"}), 400
+    file = request.files["file"]
+    label = request.form.get("label", "unknown")
+    predicted = request.form.get("predicted", "unknown")
+    audio_bytes = file.read()
+    filename = f"{label}/{uuid.uuid4()}.webm"
+    try:
+        supabase.storage.from_("audio-feedback").upload(
+            filename, audio_bytes, {"content-type": "audio/webm"}
+        )
+        return jsonify({"success": True, "filename": filename})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
