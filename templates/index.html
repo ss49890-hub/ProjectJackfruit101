@@ -358,6 +358,30 @@ function showResult(data) {
   `).join('');
 }
 
+  // เก็บ audioBlob ไว้ใช้ส่ง feedback
+let lastAudioBlob = null;
+let lastPredicted = null;
+
+// แก้ใน sendAudio() เพิ่มบรรทัดนี้ก่อน fetch
+// lastAudioBlob = blob;
+
+async function sendFeedback(correctLabel) {
+    if (!lastAudioBlob) return;
+    
+    const formData = new FormData();
+    formData.append('file', lastAudioBlob, 'audio.webm');
+    formData.append('label', correctLabel);
+    formData.append('predicted', lastPredicted || '');
+    
+    try {
+        await fetch('/save_feedback', { method: 'POST', body: formData });
+        document.getElementById('feedbackSection').innerHTML = 
+            '<div style="text-align:center; color:#4caf50; padding:12px;">✅ ขอบคุณสำหรับ feedback ครับ!</div>';
+    } catch(e) {
+        console.error('Feedback error:', e);
+    }
+}
+
 function showError(msg) {
   const el = document.getElementById('errorMsg');
   el.textContent = msg;
