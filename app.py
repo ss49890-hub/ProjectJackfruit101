@@ -85,11 +85,19 @@ def save_feedback():
     audio_bytes = file.read()
     filename = f"{label}/{uuid.uuid4()}.webm"
     try:
-        supabase.storage.from_("audio-feedback").upload(
-            filename, audio_bytes, {"content-type": "audio/webm"}
-        )
+       supabase.storage.from_("audio-feedback").upload(
+    path=filename,
+    file=audio_bytes,
+    file_options={"content-type": "audio/webm"}
+)
         return jsonify({"success": True, "filename": filename})
     except Exception as e:
+
+        supabase.table("feedback").insert({
+    "audio_url": filename,
+    "prediction": predicted,
+    "user_feedback": label
+}).execute()
         return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
