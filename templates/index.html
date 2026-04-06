@@ -374,7 +374,6 @@ function showResult(data) {
       </div>
     </div>
   `).join('');
-  // reset feedback section
   document.getElementById('feedbackSection').innerHTML = `
     <div class="feedback-title">ผลที่ได้ถูกต้องไหมครับ?</div>
     <div class="feedback-buttons">
@@ -387,17 +386,25 @@ function showResult(data) {
 }
 
 async function sendFeedback(correctLabel) {
-  if (!lastAudioBlob) return;
+  if (!lastAudioBlob) {
+    alert('ไม่พบไฟล์เสียง กรุณาอัดเสียงใหม่ครับ');
+    return;
+  }
   const formData = new FormData();
   formData.append('file', lastAudioBlob, 'audio.webm');
   formData.append('label', correctLabel);
   formData.append('predicted', lastPredicted || '');
   try {
-    await fetch('/save_feedback', { method: 'POST', body: formData });
-    document.getElementById('feedbackSection').innerHTML =
-      '<div style="text-align:center; color:#4caf50; padding:12px; font-family:Kanit,sans-serif;">✅ ขอบคุณสำหรับ feedback ครับ!</div>';
+    const res = await fetch('/save_feedback', { method: 'POST', body: formData });
+    const data = await res.json();
+    if (data.success) {
+      document.getElementById('feedbackSection').innerHTML =
+        '<div style="text-align:center; color:#4caf50; padding:12px; font-family:Kanit,sans-serif;">✅ ขอบคุณสำหรับ feedback ครับ!</div>';
+    } else {
+      alert('เกิดข้อผิดพลาด: ' + JSON.stringify(data.error));
+    }
   } catch(e) {
-    console.error('Feedback error:', e);
+    alert('Feedback error: ' + e.message);
   }
 }
 
