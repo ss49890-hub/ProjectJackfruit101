@@ -29,6 +29,8 @@ N_MFCC      = 9
 N_FFT       = 320
 HOP_LENGTH  = 160
 
+LABEL_MAP = {"กล่อง": "raw", "ขวดน้ำ": "ripe", "นิ้วชี้": "overripe"}
+
 def extract_mfcc(audio_bytes):
     with tempfile.NamedTemporaryFile(suffix=".webm", delete=False) as tmp_in:
         tmp_in.write(audio_bytes)
@@ -84,7 +86,11 @@ def save_feedback():
     label = request.form.get("label", "unknown")
     predicted = request.form.get("predicted", "unknown")
     audio_bytes = file.read()
-    filename = f"{label}/{uuid.uuid4()}.webm"
+
+    label_en = LABEL_MAP.get(label, "unknown")
+    predicted_en = LABEL_MAP.get(predicted, "unknown")
+    filename = f"{label_en}/{uuid.uuid4()}.webm"
+
     try:
         url = f"{SUPABASE_URL}/storage/v1/object/audio-feedback/{filename}"
         headers = {
@@ -97,8 +103,8 @@ def save_feedback():
             return jsonify({"error": res.text}), 500
         supabase.table("feedback").insert({
             "audio_url": filename,
-            "prediction": predicted,
-            "user_feedback": label
+            "prediction": predicted_en,
+            "user_feedback": label_en
         }).execute()
         return jsonify({"success": True, "filename": filename})
     except Exception as e:
